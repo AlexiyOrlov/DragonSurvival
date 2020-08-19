@@ -16,6 +16,9 @@ import net.minecraft.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.entity.merchant.villager.VillagerEntity;
 import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.EntityPredicates;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
@@ -50,6 +53,13 @@ public class DragonSurvivalMod {
     private static int nextId = 0;
     PlayerEntity player;
     DragonModel model = new DragonModel();
+
+    public static final ItemGroup tab = new ItemGroup(MODID) {
+        @Override
+        public ItemStack createIcon() {
+            return new ItemStack(Items.DRAGON_EGG);
+        }
+    };
 
     public DragonSurvivalMod() {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
