@@ -11,6 +11,9 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -31,7 +34,21 @@ public class BlockInit {
                     .lightValue(5)
                     .sound(SoundType.ANVIL));
 
-    public static final Block master_nest = new MasterNestBlock();
+    public static final Block master_nest_small_water = new MasterNestBlock(new AxisAlignedBB(
+            new BlockPos(0, 0, 0),
+            new BlockPos(0, 0, 0)), 100)
+            .setRegistryName("master_nest_small_water");
+
+    public static final Block master_nest_middle_water = new MasterNestBlock(new AxisAlignedBB(
+            new BlockPos(-1, 0, -1),
+            new BlockPos(1, 0, 1)), 100)
+            .setRegistryName("master_nest_middle_water");
+
+    public static final Block master_nest_large_water = new MasterNestBlock(new AxisAlignedBB(
+            new BlockPos(-2, 0, -2),
+            new BlockPos(2, 1, 2)), 100)
+            .setRegistryName("master_nest_large_water");
+
     public static final Block filler_nest = new FillerNestBlock();
 
     public static TileEntityType<MasterNestBlock.TileMasterNest> master_nest_tile;
@@ -40,19 +57,25 @@ public class BlockInit {
     @SubscribeEvent
     public static void registerBlocks(final RegistryEvent.Register<Block> event) {
         event.getRegistry().register(dragon_altar);
-        event.getRegistry().register(master_nest);
+        event.getRegistry().register(master_nest_small_water);
+        event.getRegistry().register(master_nest_middle_water);
+        event.getRegistry().register(master_nest_large_water);
         event.getRegistry().register(filler_nest);
     }
 
     @SubscribeEvent
     public static void registerTiles(final RegistryEvent.Register<TileEntityType<?>> event) {
-        master_nest_tile = registerTile(event, MasterNestBlock.TileMasterNest::new, master_nest);
+        master_nest_tile = registerTile(event, MasterNestBlock.TileMasterNest::new, new ResourceLocation(DragonSurvivalMod.MODID, "master_nest"), master_nest_small_water, master_nest_middle_water, master_nest_large_water);
         filler_nest_tile = registerTile(event, FillerNestBlock.TileFillerNest::new, filler_nest);
     }
 
     private static <A extends TileEntity> TileEntityType<A> registerTile(RegistryEvent.Register<TileEntityType<?>> event, Supplier<A> factory, Block block) {
-        TileEntityType<A> tile = TileEntityType.Builder.create(factory, block).build(null);
-        tile.setRegistryName(block.getRegistryName());
+        return registerTile(event, factory, block.getRegistryName(), block);
+    }
+
+    private static <A extends TileEntity> TileEntityType<A> registerTile(RegistryEvent.Register<TileEntityType<?>> event, Supplier<A> factory, ResourceLocation registryName, Block... validBlocks) {
+        TileEntityType<A> tile = TileEntityType.Builder.create(factory, validBlocks).build(null);
+        tile.setRegistryName(registryName);
         event.getRegistry().register(tile);
         return tile;
     }
@@ -60,7 +83,9 @@ public class BlockInit {
     @SubscribeEvent
     public static void registerBlockItems(final RegistryEvent.Register<Item> event) {
         registerItemBlock(event, dragon_altar);
-        registerItemBlock(event, master_nest);
+        registerItemBlock(event, master_nest_small_water);
+        registerItemBlock(event, master_nest_middle_water);
+        registerItemBlock(event, master_nest_large_water);
         registerItemBlock(event, filler_nest);
     }
 

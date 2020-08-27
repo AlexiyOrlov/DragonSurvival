@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "": {
+      "model": "dragonsurvival:block/nest_small_water"
+    },
+    "inventory": {
+      "model": "dragonsurvival:block/nest_small_water"
+    }
+  }
+}
